@@ -9,8 +9,25 @@ jobs:
     - setup_remote_docker:
         docker_layer_caching: true
     - run: docker build -t quay.io/ktbartholomew/nsmaker:$CIRCLE_SHA1 .
+  push:
+    docker:
+    - image: circleci/golang:1.12
+    working_directory: ~/workspace
+    steps:
+    - checkout
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - run: docker login quay.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - run: docker build -t quay.io/ktbartholomew/nsmaker:$CIRCLE_SHA1 .
+    - run: docker push quay.io/ktbartholomew/nsmaker:$CIRCLE_SHA1
 workflows:
   version: 2
   test:
     jobs:
     - test
+    - push:
+          filters:
+            branches:
+              only: master
+          requires:
+            - pretest
