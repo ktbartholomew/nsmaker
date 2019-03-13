@@ -30,4 +30,4 @@ workflows:
             branches:
               only: master
           requires:
-            - pretest
+            - test
