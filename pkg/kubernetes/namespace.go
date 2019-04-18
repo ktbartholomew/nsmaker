@@ -62,6 +62,11 @@ func getClientSet() (*kubernetes.Clientset, error) {
 		if err != nil {
 			return nil, err
 		}
+	} else if os.Getenv("KUBECONFIG") != "" {
+		config, err = clientcmd.BuildConfigFromFlags("", os.Getenv("KUBECONFIG"))
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		config, err = clientcmd.BuildConfigFromFlags("", os.Getenv("HOME")+"/.kube/config")
 		if err != nil {
